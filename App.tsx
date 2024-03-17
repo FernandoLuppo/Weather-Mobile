@@ -1,10 +1,13 @@
 import React from "react"
-import Home from "./src/screens/home/Home"
-import Login from "./src/screens/login/Login"
+import { AuthProvider } from "./src/shared/context/auth/AuthProvider"
+import Routes from "@/routes/Routes"
 
 const App = () => {
-  const token = false
-
-  return <>{token ? <Home /> : <Login />}</>
+  return (
+    <AuthProvider>
+      <Routes />
+    </AuthProvider>
+  )
 }
+
 export default App
