@@ -1,14 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm } from "react-hook-form"
 import { useAuth } from "@/shared/hooks"
-import { ILoginBody, IUseLoginForm } from "@/shared/types"
-import { loginSchema } from "@/shared/utils"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { IRegisterBody, IUseRegisterForm } from "@/shared/types"
+import { registerSchema } from "@/shared/utils"
 
-export const handleForm = (): IUseLoginForm => {
+export const handleForm = (): IUseRegisterForm => {
   const { register, handleSubmit, formState, reset, control } = useForm({
     mode: "all",
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(registerSchema),
     defaultValues: {
       email: "",
       password: ""
@@ -22,11 +21,10 @@ export const handleForm = (): IUseLoginForm => {
 export const submitData = async ({
   reset,
   body,
-  navigation,
-  setStorageTokens
-}: ILoginBody): Promise<void> => {
+  navigation
+}: IRegisterBody): Promise<void> => {
   try {
-    const response = await useAuth.post("/user/login", body)
+    const response = await useAuth.post("/user/register", body)
 
     if (!response) throw new Error("Request Fail")
     if (response.data.isError) {
@@ -34,13 +32,7 @@ export const submitData = async ({
       return
     }
 
-    setStorageTokens(response.headers["set-cookie"])
-    await AsyncStorage.setItem(
-      "userInfos",
-      JSON.stringify(response.data.content)
-    )
-
-    navigation.navigate("Home")
+    navigation.navigate("Login")
   } catch (error) {
     console.log(error)
   } finally {
